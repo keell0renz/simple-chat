@@ -7,7 +7,7 @@ from langchain.schema import AIMessage, HumanMessage
 
 @cl.on_chat_start
 async def init():
-    """Setup code, defines LangChain workflow."""
+    """Setup code, defines session-dependant variables such as chat history."""
 
     chat_history = []
 
@@ -16,7 +16,7 @@ async def init():
 
 @cl.on_message
 async def main(message: cl.Message):
-    """Handles messages."""
+    """Processes messages sent by user."""
 
     chat_history = cl.user_session.get("chat_history")
 
