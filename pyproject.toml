@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "simple-chatbot"
+version = "0.0.1"
+description = "My tiny little goofy cute chatbot."
+authors = ["Bohdan Agarkov <sidi0us.mail@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+langchain = "^0.1.16"
+langchain-openai = "^0.1.3"
+openai = "^1.17.0"
+chainlit = "^1.0.502"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+app = "simple_chatbot:main"
