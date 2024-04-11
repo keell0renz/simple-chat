@@ -19,3 +19,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 app = "simple_chatbot:main"
+dev = "simple_chatbot:dev"

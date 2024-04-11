@@ -8,16 +8,18 @@ from langchain.schema import AIMessage, HumanMessage
 
 llm = ChatOpenAI(model="gpt-3.5-turbo", streaming=True)
 
-prompt = ChatPromptTemplate.from_messages([
-    (
-        "system", 
-        """
+prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """
             You are helpful assistant.
-        """
-    ),
-    MessagesPlaceholder(variable_name="chat_history"),
-    ("human", "{prompt}")
-])
+        """,
+        ),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("human", "{prompt}"),
+    ]
+)
 
 chain = prompt | llm | StrOutputParser()
 
@@ -30,6 +32,7 @@ async def init():
 
     cl.user_session.set("chat_history", chat_history)
 
+
 @cl.on_message
 async def main(message: cl.Message):
     """Handles messages."""
@@ -41,7 +44,9 @@ async def main(message: cl.Message):
     msg = cl.Message(content="")
     await msg.send()
 
-    async for chunk in chain.astream({"chat_history": chat_history, "prompt": message.content}):
+    async for chunk in chain.astream(
+        {"chat_history": chat_history, "prompt": message.content}
+    ):
         await msg.stream_token(chunk)
 
     chat_history.append(AIMessage(content=msg.content))
