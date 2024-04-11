@@ -1,6 +1,6 @@
 """Main file, the entry point."""
 
-from chain import chain  # pylint: disable=import-error
+from chain import create_chat_chain  # pylint: disable=import-error
 import chainlit as cl
 from langchain.schema import AIMessage, HumanMessage
 
@@ -17,6 +17,8 @@ async def init():
 @cl.on_message
 async def main(message: cl.Message):
     """Processes messages sent by user."""
+
+    chain = create_chat_chain()
 
     chat_history = cl.user_session.get("chat_history")
 
