@@ -1,37 +1,62 @@
 """Main file, the entry point."""
 
-from chain import create_chat_chain  # pylint: disable=import-error
+from typing import Any, Literal
+from chain import create_chat_chain as get_chain
 
 import chainlit as cl
+from chainlit.input_widget import Select, TextInput
 from langchain_core.messages import MessageLikeRepresentation
 from langchain.schema import AIMessage, HumanMessage
 
 
 @cl.on_chat_start
 async def init():
-    """Setup code, defines session-dependant variables such as chat history."""
+    settings = await cl.ChatSettings(
+        [
+            Select(
+                id="model",
+                label="OpenAI Model",
+                values=["gpt-3.5-turbo", "gpt-4-turbo"],
+                initial_index=0,
+            ),
+            TextInput(
+                id="system",
+                label="System Prompt",
+                initial="You are a helpful assistant created by @keell0renz",
+            ),
+        ]
+    ).send()
 
     chat_history: list[MessageLikeRepresentation] = []
 
     cl.user_session.set("chat_history", chat_history)
+    cl.user_session.set("model", settings["model"])
+    cl.user_session.set("system", settings["system"])
+
+
+@cl.on_settings_update
+async def on_settings_update(settings: dict[str, Any]):
+    cl.user_session.set("model", settings["model"])
+    cl.user_session.set("system", settings["system"])
 
 
 @cl.on_message
 async def main(message: cl.Message):
-    """Processes messages sent by user."""
-
-    chain = create_chat_chain()
-
+    model: Literal["gpt-3.5-turbo", "gpt-4-turbo"] = cl.user_session.get("model")  # type: ignore
+    system: str = cl.user_session.get("model")  # type: ignore
     history: list[MessageLikeRepresentation] = cl.user_session.get("chat_history")  # type: ignore
+    response = cl.Message(content="")
 
     history.append(HumanMessage(content=message.content))
 
-    msg = cl.Message(content="")
-    await msg.send()
+    await response.send()
 
-    async for chunk in chain.astream(
-        {"chat_history": history, "prompt": message.content}
-    ):
-        await msg.stream_token(chunk)
+    try:
+        async for chunk in get_chain(model, system).astream(
+            {"chat_history": history, "prompt": message.content}
+        ):
+            await response.stream_token(chunk)
+    except RuntimeError:
+        pass
 
-    history.append(AIMessage(content=msg.content))
+    history.append(AIMessage(content=response.content))

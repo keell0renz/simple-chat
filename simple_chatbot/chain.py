@@ -9,17 +9,17 @@ from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 
 def create_chat_chain(
-    model: Literal["gpt-3.5-turbo", "gpt-4-turbo-0125"] = "gpt-3.5-turbo",
+    model: Literal["gpt-3.5-turbo", "gpt-4-turbo"] = "gpt-3.5-turbo",
     system_prompt: str = "You are helpful assistant.",
 ) -> RunnableSerializable:
     """Creates a chat chain with a specified model and system prompt.
+    g
+        Args:
+            model (Literal["gpt-3.5-turbo", "gpt-4-turbo"]): The model to use for the chat.
+            system_prompt (str): The initial system prompt for the chat.
 
-    Args:
-        model (Literal["gpt-3.5-turbo", "gpt-4-turbo-0125"]): The model to use for the chat.
-        system_prompt (str): The initial system prompt for the chat.
-
-    Returns:
-        A chat chain configured with the specified model and system prompt.
+        Returns:
+            A chat chain configured with the specified model and system prompt.
     """
 
     llm = ChatOpenAI(model=model, streaming=True)
