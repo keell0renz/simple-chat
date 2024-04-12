@@ -1,10 +1,10 @@
 """Main file, the entry point."""
 
+from chain import create_chat_chain  # pylint: disable=import-error
+
 import chainlit as cl
 from langchain_core.messages import MessageLikeRepresentation
 from langchain.schema import AIMessage, HumanMessage
-
-from chain import create_chat_chain  # pylint: disable=import-error
 
 
 @cl.on_chat_start
