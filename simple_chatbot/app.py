@@ -20,7 +20,7 @@ async def main(message: cl.Message):
 
     chain = create_chat_chain()
 
-    chat_history = cl.user_session.get("chat_history")
+    chat_history: list = cl.user_session.get("chat_history")  # type: ignore
 
     chat_history.append(HumanMessage(content=message.content))
 
