@@ -43,7 +43,7 @@ async def on_settings_update(settings: dict[str, Any]):
 @cl.on_message
 async def main(message: cl.Message):
     model: Literal["gpt-3.5-turbo", "gpt-4-turbo"] = cl.user_session.get("model")  # type: ignore
-    system: str = cl.user_session.get("model")  # type: ignore
+    system: str = cl.user_session.get("system")  # type: ignore
     history: list[MessageLikeRepresentation] = cl.user_session.get("chat_history")  # type: ignore
     response = cl.Message(content="")
 
