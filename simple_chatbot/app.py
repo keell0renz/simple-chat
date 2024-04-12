@@ -21,16 +21,16 @@ async def main(message: cl.Message):
 
     chain = create_chat_chain()
 
-    chat_history: list[MessageLikeRepresentation] = cl.user_session.get("chat_history")  # type: ignore
+    history: list[MessageLikeRepresentation] = cl.user_session.get("chat_history")  # type: ignore
 
-    chat_history.append(HumanMessage(content=message.content))
+    history.append(HumanMessage(content=message.content))
 
     msg = cl.Message(content="")
     await msg.send()
 
     async for chunk in chain.astream(
-        {"chat_history": chat_history, "prompt": message.content}
+        {"chat_history": history, "prompt": message.content}
     ):
         await msg.stream_token(chunk)
 
-    chat_history.append(AIMessage(content=msg.content))
+    history.append(AIMessage(content=msg.content))
