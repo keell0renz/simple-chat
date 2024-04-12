@@ -2,8 +2,8 @@
 
 from chain import create_chat_chain  # pylint: disable=import-error
 import chainlit as cl
-from langchain.schema import AIMessage, HumanMessage
 from langchain_core.messages import MessageLikeRepresentation
+from langchain.schema import AIMessage, HumanMessage
 
 
 @cl.on_chat_start
