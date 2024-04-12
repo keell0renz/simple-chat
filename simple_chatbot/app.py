@@ -31,7 +31,6 @@ async def init():
 @cl.on_settings_update
 async def on_settings_update(settings: dict[str, Any]):
     cl.user_session.set("model", settings["model"])
-    cl.user_session.set("system", settings["system"])
 
 
 @cl.on_message
