@@ -18,12 +18,7 @@ async def init():
                 label="OpenAI Model",
                 values=["gpt-3.5-turbo", "gpt-4-turbo"],
                 initial_index=0,
-            ),
-            TextInput(
-                id="system",
-                label="System Prompt",
-                initial="You are a helpful assistant created by @keell0renz",
-            ),
+            )
         ]
     ).send()
 
@@ -31,7 +26,6 @@ async def init():
 
     cl.user_session.set("chat_history", chat_history)
     cl.user_session.set("model", settings["model"])
-    cl.user_session.set("system", settings["system"])
 
 
 @cl.on_settings_update
@@ -43,7 +37,6 @@ async def on_settings_update(settings: dict[str, Any]):
 @cl.on_message
 async def main(message: cl.Message):
     model: Literal["gpt-3.5-turbo", "gpt-4-turbo"] = cl.user_session.get("model")  # type: ignore
-    system: str = cl.user_session.get("system")  # type: ignore
     history: list[MessageLikeRepresentation] = cl.user_session.get("chat_history")  # type: ignore
     response = cl.Message(content="")
 
@@ -52,7 +45,7 @@ async def main(message: cl.Message):
     await response.send()
 
     try:
-        async for chunk in get_chain(model, system).astream(
+        async for chunk in get_chain(model).astream(
             {"chat_history": history, "prompt": message.content}
         ):
             await response.stream_token(chunk)
