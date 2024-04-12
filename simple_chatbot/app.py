@@ -3,13 +3,14 @@
 from chain import create_chat_chain  # pylint: disable=import-error
 import chainlit as cl
 from langchain.schema import AIMessage, HumanMessage
+from langchain_core.messages import MessageLikeRepresentation
 
 
 @cl.on_chat_start
 async def init():
     """Setup code, defines session-dependant variables such as chat history."""
 
-    chat_history = []
+    chat_history: list[MessageLikeRepresentation] = []
 
     cl.user_session.set("chat_history", chat_history)
 
@@ -20,7 +21,7 @@ async def main(message: cl.Message):
 
     chain = create_chat_chain()
 
-    chat_history: list = cl.user_session.get("chat_history")  # type: ignore
+    chat_history: list[MessageLikeRepresentation] = cl.user_session.get("chat_history")  # type: ignore
 
     chat_history.append(HumanMessage(content=message.content))
 
